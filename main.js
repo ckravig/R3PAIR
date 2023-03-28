@@ -1,29 +1,30 @@
-import * as THREE from 'three'
-import { Sphere } from 'three'
+import './style.css'
 
-// Scene
-const scene = new THREE.Scene()
+import * as THREE from 'three';
 
-// First Sphere
-const geometry = new THREE.SphereGeometry(3, 64, 64)
-const material = new THREE.MeshStandardMaterial({
-  color: '#ff0083'
-})
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+const scene = new THREE.Scene();
 
-// Light
-const light = new THREE.PointLight(0xffffff, 1, 100)
-light.position.set(0, 10, 10)
-scene.add(light)
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-// Camera
-const camera = new THREE.PerspectiveCamera(45, 800 / 600, 0.1, 100)
-camera.position.z = 10
-scene.add(camera)
+const renderer = new THREE.WebGLRenderer({
+  canvas: document.querySelector('#bg'),
+});
 
-// Renderer
-const canvas = document.querySelector('.webgl')
-const renderer = new THREE.WebGLRenderer({ canvas })
-renderer.setSize(800, 600)
-renderer.render(scene, camera)
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
+camera.position.setZ(30);
+
+renderer.render( scene, camera );
+
+const geometry = new THREE.TorusGeometry ( 10, 3, 16, 100 );
+const material = new THREE.MeshBasicMaterial( {color: white, wireframe: true } );
+const torus = new THREE.Mesh( geometry, material );
+
+scene.add(torus)
+
+function animate() {
+  requestAnimationFrame( animate );
+  render.render( scene, camera );
+}
+
+animate();
