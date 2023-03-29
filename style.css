@@ -1,3 +1,5 @@
+@import url("https://use.typekit.net/jmk3xov.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +8,7 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: -10;
 }
 
 
@@ -17,7 +20,6 @@ canvas {
   font-weight: 400;
   font-style: normal;
 }
-
 
 main {
   width: 100vw;
