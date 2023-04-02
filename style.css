@@ -11,6 +11,32 @@ canvas {
   z-index: -10;
 }
 
+#gradient {
+  background: linear-gradient(225deg, #2d6196, #220b39, #247067);
+  background-size: 600% 600%;
+  z-index: -20;
+
+  -webkit-animation: gradientAnimate 42s ease infinite;
+  -moz-animation: gradientAnimate 42s ease infinite;
+  animation: gradientAnimate 42s ease infinite;
+}
+
+@-webkit-keyframes gradientAnimate {
+  0%{background-position:0% 99%}
+  50%{background-position:100% 2%}
+  100%{background-position:0% 99%}
+}
+@-moz-keyframes gradientAnimate {
+  0%{background-position:0% 99%}
+  50%{background-position:100% 2%}
+  100%{background-position:0% 99%}
+}
+@keyframes gradientAnimate {
+  0%{background-position:0% 99%}
+  50%{background-position:100% 2%}
+  100%{background-position:0% 99%}
+}
+
 
 :root {
   --dark-bg: rgba(15, 15, 15, 0.95);
