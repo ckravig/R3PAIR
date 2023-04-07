@@ -118,13 +118,52 @@ window.onload = function() {
   // ^Scroll Animation^ -------------------------------------------------
 
   // Topic Box Mouse Drag -------------------------------------------------
-  // Add event listeners for mouse events on repairBox object ----------------
+  // Add event listeners for mouse events on repairBox object 
+
+  class MouseMeshInteraction {
+    constructor(scene, camera){
+      this.scene = scene;
+      this.camera = camera;
+
+      this.raycaster = new THREE.Raycaster();
+      this.mouse = new THREE.Vector2();
+
+      this.updated = false;
+      this.event = '';
+
+      this.handlers = new Map();
+
+      this.handlers.set('click', []);
+      this.handlers.set('drag', []);
+
+      window.addEventListener('mousemove', this);
+
+      window.addEventListener('click', this);
+      window.addEventListener('drag', this);
+    }
+
+    handleEvent(event){
+      
+    }
+
+  }
+  
   let isDragging = false;
   let previousMousePosition = { x: 0, y: 0 };
   let currentRotationSpeed = { x: 0, y: 0 };
 
   renderer.domElement.addEventListener('mousedown', event => {
-    isDragging = true;
+    mouse.x (e.clientX / window.innerWidth) *2-1;
+    mouse.y (e.clientY / window.innerHeight) *2-1;
+    planeNormal.copy(camera.position).normalize();
+    plane.setFromNormalAndCoplanarPoint(planeNormal, scene.position);
+    raycaster.setFromCamera(mouse, camera);
+    raycaster.ray.intersectPlane(plane, intersectionPoint);
+    // isDragging = true;
+  });
+
+  renderer.domElement.addEventListener('click', event => {
+    repairBox.position
   });
 
   renderer.domElement.addEventListener('mousemove', event => {
