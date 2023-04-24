@@ -84,7 +84,7 @@ scene.add(pointLight, ambientLight);
 
   // repairBox object -------------------------------------------------
 
-const repairBox = createTopicBox('RightToRepair.jpg');
+const repairBox = createTopicBox('/images/RightToRepair.jpg');
 
 scene.add(repairBox);
 
@@ -188,7 +188,7 @@ function animate() {
   // torus.rotation.y += 0.005;
   // torus.rotation.z += 0.01;
 
-  // repairBox.rotation.x += 0.01;
+  repairBox.rotation.y += 0.01;
 
   // repairBox animation loop
   // const dragFactor = 0.99;
