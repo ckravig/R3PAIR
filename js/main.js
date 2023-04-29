@@ -212,20 +212,18 @@ function onMouseMove(event, mesh) {
 function updateRotation(mesh) {
   if (!isMouseDown) {mesh.rotation.y += 0.005;}
   
-  // mesh.rotation.y += currentRotationSpeed.y * 0.01;
-  // mesh.rotation.x += currentRotationSpeed.x * 0.01;
-  // currentRotationSpeed.x *= momentumDampingFactor;
-  // currentRotationSpeed.y *= momentumDampingFactor;
-  // if (Math.abs(currentRotationSpeed.x) < 0.01 && Math.abs(currentRotationSpeed.y) < 0.01) {
-  //   currentRotationSpeed = { x: 0, y: 0 };
-  // }
-
+  const dragFactor = 0.99;
+  mesh.rotation.x += currentRotationSpeed.x;
+  mesh.rotation.y += currentRotationSpeed.y;
+  currentRotationSpeed.x *= dragFactor;
+  currentRotationSpeed.y *= dragFactor;
+  
   if (!isMouseDown) {
-    topicBox1.rotation.y += 0.005;
-    if(topicBox1.rotation.x > 0) {
-      topicBox1.rotation.x += -0.01;
-    }else if(topicBox1.rotation.x < 0) {
-      topicBox1.rotation.x += 0.01;
+    mesh.rotation.y += 0.005;
+    if(mesh.rotation.x > 0) {
+      mesh.rotation.x += -0.01;
+    }else if(mesh.rotation.x < 0) {
+      mesh.rotation.x += 0.01;
     }
   }
 }
@@ -343,10 +341,14 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
       camera.position.x += 5;
     }
-  
-    if (event.key === 'ArrowLeft') {
-      camera.position.x += -5;
+
+    if (camera.position.x != 0) {
+      if (event.key === 'ArrowLeft') {
+        camera.position.x += -5;
+      }
     }
+  
+    
 
   }
   console.log('infoView:', infoView);
