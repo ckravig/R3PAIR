@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+
 // Create Topic Box
 
-export default function createTopicBox(topicBoxMapPath) {
+export default function createTopicBox(topicBoxMapPath, meshID) {
   const topicBoxMapTexture = new THREE.TextureLoader().load(topicBoxMapPath);
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshBasicMaterial({ map: topicBoxMapTexture });
@@ -12,7 +13,8 @@ export default function createTopicBox(topicBoxMapPath) {
 
   // add a name property
   mesh.name = 'topicBox';
-  
-  
+
+  // mesh.id = meshID;
+
   return mesh;
 }
