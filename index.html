@@ -10,37 +10,27 @@
 
     <canvas id="canvas"></canvas>   
 
-    <div id="gradient" class="fixed w-screen h-screen"></div>
+    <!-- <div id="loading-screen" class="fixed w-screen h-screen gradient">
+
+      Loading Page
+      <div id="loading-icon" class="flex items-center justify-center h-screen lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+    </div> -->
+
+    <div id="gradient" class="fixed w-screen h-screen gradient"></div>
 
     <!-- <main> -->
     <main id="main" class="h-screen flex justify-center items-center">
 
-      <div id="waterMark" class="fixed flex justify-center w-screen items-center bottom-4 text-opacity-50 text-gray-300">
+      <div id="waterMark" class="z-[10000] fixed flex justify-center w-screen items-center bottom-4 text-opacity-50 text-gray-300">
         <h1>R3PAIR</h1>
         <p> &nbsp;-&nbsp; </p>
         <a href="https://ckravig.com" target="_blank">Collin Kravig</a>
       </div>
 
 	  <div id="infoBox" class="invisible relative w-screen-75 h-screen-75 bg-gray-300 text-black overflow-y-scroll">
-		<h2 class="p-10 text-4xl text-center">
-			Right to Repair
-		</h2>
-		<p class="text-lg text-justify px-32">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet nisl purus in mollis nunc sed. Ac orci phasellus egestas tellus rutrum. Cursus turpis massa tincidunt dui ut ornare lectus. Nulla pharetra diam sit amet nisl suscipit adipiscing. Aliquet eget sit amet tellus. Odio ut enim blandit volutpat maecenas volutpat blandit aliquam etiam. Tellus elementum sagittis vitae et leo duis ut diam quam. Nisl nunc mi ipsum faucibus vitae. Purus faucibus ornare suspendisse sed. Cum sociis natoque penatibus et magnis dis.
-
-			Augue lacus viverra vitae congue eu. Nulla facilisi etiam dignissim diam. At erat pellentesque adipiscing commodo elit at imperdiet dui. Arcu bibendum at varius vel pharetra vel turpis nunc. Nunc lobortis mattis aliquam faucibus purus in massa tempor nec. Varius sit amet mattis vulputate enim nulla. Mattis enim ut tellus elementum sagittis vitae et leo duis. Facilisi morbi tempus iaculis urna id volutpat. Vitae tempus quam pellentesque nec nam aliquam sem et. Diam quis enim lobortis scelerisque fermentum. Laoreet suspendisse interdum consectetur libero id faucibus nisl.
-
-			Leo urna molestie at elementum eu facilisis. Mattis pellentesque id nibh tortor id aliquet lectus proin. Est velit egestas dui id ornare. Aliquam malesuada bibendum arcu vitae elementum. Tellus elementum sagittis vitae et leo. In aliquam sem fringilla ut. Lorem mollis aliquam ut porttitor leo a diam. Pellentesque elit eget gravida cum sociis natoque. Purus ut faucibus pulvinar elementum integer enim neque volutpat ac. Faucibus purus in massa tempor nec feugiat nisl pretium. Aliquet sagittis id consectetur purus ut.
-
-			Quam quisque id diam vel quam. Enim neque volutpat ac tincidunt vitae semper quis. Justo eget magna fermentum iaculis eu non diam. Sed faucibus turpis in eu. Tellus in hac habitasse platea dictumst vestibulum. Neque ornare aenean euismod elementum nisi quis eleifend. Mauris augue neque gravida in fermentum et sollicitudin ac orci. Suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Facilisi nullam vehicula ipsum a arcu cursus vitae. Quisque non tellus orci ac auctor augue mauris augue. Vitae tortor condimentum lacinia quis. Turpis egestas pretium aenean pharetra. Ac feugiat sed lectus vestibulum mattis ullamcorper. Gravida arcu ac tortor dignissim convallis.
-
-			Urna neque viverra justo nec ultrices dui sapien. Elementum eu facilisis sed odio morbi. Accumsan tortor posuere ac ut consequat semper viverra nam libero. Non quam lacus suspendisse faucibus interdum. Sed risus pretium quam vulputate. Velit dignissim sodales ut eu sem integer vitae justo eget. At volutpat diam ut venenatis. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Penatibus et magnis dis parturient montes nascetur ridiculus mus mauris. Ante in nibh mauris cursus mattis.
-				
-			Quam quisque id diam vel quam. Enim neque volutpat ac tincidunt vitae semper quis. Justo eget magna fermentum iaculis eu non diam. Sed faucibus turpis in eu. Tellus in hac habitasse platea dictumst vestibulum. Neque ornare aenean euismod elementum nisi quis eleifend. Mauris augue neque gravida in fermentum et sollicitudin ac orci. Suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Facilisi nullam vehicula ipsum a arcu cursus vitae. Quisque non tellus orci ac auctor augue mauris augue. Vitae tortor condimentum lacinia quis. Turpis egestas pretium aenean pharetra. Ac feugiat sed lectus vestibulum mattis ullamcorper. Gravida arcu ac tortor dignissim convallis.
-
-			Urna neque viverra justo nec ultrices dui sapien. Elementum eu facilisis sed odio morbi. Accumsan tortor posuere ac ut consequat semper viverra nam libero. Non quam lacus suspendisse faucibus interdum. Sed risus pretium quam vulputate. Velit dignissim sodales ut eu sem integer vitae justo eget. At volutpat diam ut venenatis. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Penatibus et magnis dis parturient montes nascetur ridiculus mus mauris. Ante in nibh mauris cursus mattis.
-
-		</p>
+		<h2 id="infoBoxTitle" class="p-10 text-4xl text-center"></h2>
+		<p id="infoBoxContent" class="text-lg text-justify px-32"></p>
 
 		<button type="button" id="infoBoxCloseButton" class="absolute top-4 right-4 rounded-md p-2 items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
 			<span class="sr-only">Close menu</span>
@@ -126,9 +116,7 @@
 
 
 
-
-
-
+  
 
 
 

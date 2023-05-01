@@ -8,6 +8,9 @@ import MouseMeshInteraction from './three_mmi';
 // Import Topic Box object
 import createTopicBox from './topicBox';
 
+// Import Info Box object
+import createInfoBox from './infoBox';
+
 // Info View
 let infoView = false;
 
@@ -115,10 +118,8 @@ if (debug) {
 // create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
 mmi.addHandler('topicBox', 'click', function(mesh) {
 
-  if (mesh.id === 13) {
-    infoBox.style.visibility = 'visible';
-    infoView = true;
-  }
+  createInfoBox(mesh.id);
+  infoView = true;
     
   console.log('infoView:', infoView);
   console.log('mesh:', mesh);
