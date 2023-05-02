@@ -71,7 +71,7 @@ topicBox1.position.z = -5;
 topicBox1.position.x = 0;
 
 topicBox2.position.z = -5;
-topicBox2.position.x = 5;
+topicBox2.position.x = 100;
 
 scene.add(topicBox1);
 scene.add(topicBox2);
@@ -233,12 +233,12 @@ document.addEventListener('keydown', function(event) {
   if (infoView === false) {
     
     if (event.key === 'ArrowRight') {
-      camera.position.x += 5;
+      camera.position.x += 100;
     }
 
     if (camera.position.x != 0) {
       if (event.key === 'ArrowLeft') {
-        camera.position.x += -5;
+        camera.position.x += -100;
       }
     }
   
