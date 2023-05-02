@@ -59,39 +59,13 @@ pointLight.position.set(5, 5, 5);
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
-  // Gradient Background ------------------------------------------------
 
-  // // Create a canvas element
-  // const canvas = document.createElement('canvas');
-  // canvas.width = window.innerWidth;
-  // canvas.height = window.innerHeight;
+// topicBox1 object -------------------------------------------------
 
-  // // Get the 2D context of the canvas
-  // const ctx = canvas.getContext('2d');
+let topicBox1 = createTopicBox('/images/RightToRepair.jpg');
+let topicBox2 = createTopicBox('/images/Recycle-Logo.jpg');
 
-  // // Create a gradient fill style for the canvas
-  // const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  // gradient.addColorStop(0, '#8ec5fc');
-  // gradient.addColorStop(0.5, '#e0c3fc');
-  // gradient.addColorStop(1, '#80d0c7');
-
-  // // Draw the gradient on the canvas
-  // ctx.fillStyle = gradient;
-  // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // // Create a texture from the canvas
-  // const texture = new THREE.Texture(canvas);
-  // texture.needsUpdate = true;
-
-  // // Set the texture as the background of the scene
-  // scene.background = texture;
-
-  // ^Gradient Background^ ---------------------------------------------------
-
-  // topicBox1 object -------------------------------------------------
-
-const topicBox1 = createTopicBox('/images/RightToRepair.jpg');
-const topicBox2 = createTopicBox('/images/Recycle-Logo.jpg');
+const meshArray = [topicBox1, topicBox2];
 
 topicBox1.position.z = -5;
 topicBox1.position.x = 0;
@@ -134,38 +108,25 @@ closeButton.addEventListener('click', () => {
   console.log('infoView:', infoView);
 });
 
-  // ^topicBox1 object^ -------------------------------------------------
-
-  // Scroll Animation -------------------------------------------------
-
-  // function moveCamera() {
-  //   const t = document.body.getBoundingClientRect().top;
-  // moon.rotation.x += 0.05;
-  // moon.rotation.y += 0.075;
-  // moon.rotation.z += 0.05;
-
-  // topicBox1.rotation.y += 0.01;
-  // topicBox1.rotation.z += 0.01;
-
-  //   camera.position.z = t * -0.01;
-  //   camera.position.x = t * -0.0002;
-  //   camera.rotation.y = t * -0.0002;
-  // }
-
-  // document.body.onscroll = moveCamera;
-  // moveCamera();
-
-  // ^Scroll Animation^ -------------------------------------------------
+// ^topicBox1 object^ -------------------------------------------------
 
 // Topic Box Mouse Drag -------------------------------------------------
 // Add event listeners for mouse events on topicBox1 object 
 let isMouseDown = false;
 let previousMousePosition = { x: 0, y: 0 };
-let currentRotationSpeed = { x: 0, y: 0 };
+let selectedMesh = null;
+
+const currentRotationSpeeds = [];
+
+meshArray.forEach(mesh => {
+  currentRotationSpeeds.push({ x: 0, y: 0 });
+});
 
 mmi.addHandler('topicBox', 'mousedown', function(mesh) {
   // when mouse button is pressed down on the mesh, start tracking mouse movement
   isMouseDown = true;
+  selectedMesh = mesh;
+  console.log('Selected Mesh on MouseDown:', selectedMesh);
 }); 
 
 // add a mouseup event listener to stop tracking mouse movement and rotation
@@ -185,8 +146,8 @@ function onMouseMove(event) {
       x: event.clientX - previousMousePosition.x,
       y: event.clientY - previousMousePosition.y,
     };
-    currentRotationSpeed.x = deltaMove.y * 0.01;
-    currentRotationSpeed.y = deltaMove.x * 0.01;
+    currentRotationSpeeds[meshArray.indexOf(selectedMesh)].x = deltaMove.y * 0.01;
+    currentRotationSpeeds[meshArray.indexOf(selectedMesh)].y = deltaMove.x * 0.01;
   }
   previousMousePosition = {
     x: event.clientX,
@@ -195,19 +156,35 @@ function onMouseMove(event) {
 }
 
 // define a function to update rotation with momentum
-function updateRotation(mesh) {
-  // topicBox1 animation loop
-  const dragFactor = 0.99;
-  mesh.rotation.x += currentRotationSpeed.x;
-  mesh.rotation.y += currentRotationSpeed.y;
-  currentRotationSpeed.x *= dragFactor;
-  currentRotationSpeed.y *= dragFactor;
-  
-  if (!isMouseDown) {
+function updateRotation(mesh, index) {
+  // apply rotation only on the selected mesh
+  if (mesh === selectedMesh) {
+    const dragFactor = 0.99;
+    mesh.rotation.x += currentRotationSpeeds[index].x;
+    mesh.rotation.y += currentRotationSpeeds[index].y;
+    currentRotationSpeeds[index].x *= dragFactor;
+    currentRotationSpeeds[index].y *= dragFactor;
+
+    if (!isMouseDown) {
+      mesh.rotation.y += 0.005;
+      if (mesh.rotation.x > 0) {
+        mesh.rotation.x += -0.01;
+      } else if (mesh.rotation.x < 0) {
+        mesh.rotation.x += 0.01;
+      }
+    }
+  } else {
+    // rotate the mesh independently if it is not selected
+    const dragFactor = 0.99;
+    mesh.rotation.x += currentRotationSpeeds[index].x;
+    mesh.rotation.y += currentRotationSpeeds[index].y;
+    currentRotationSpeeds[index].x *= dragFactor;
+    currentRotationSpeeds[index].y *= dragFactor;
+
     mesh.rotation.y += 0.005;
-    if(mesh.rotation.x > 0) {
+    if (mesh.rotation.x > 0) {
       mesh.rotation.x += -0.01;
-    }else if(mesh.rotation.x < 0) {
+    } else if (mesh.rotation.x < 0) {
       mesh.rotation.x += 0.01;
     }
   }
@@ -219,38 +196,19 @@ function updateRotation(mesh) {
 function animate() {
   requestAnimationFrame(animate);
 
-  // torus.rotation.x += 0.01;
-  // torus.rotation.y += 0.005;
-  // torus.rotation.z += 0.01;
-
-  // topicBox1.rotation.y += 0.005;
-
-  updateRotation(topicBox1);
-
-  // topicBox1 animation loop
-  // const dragFactor = 0.99;
-  // topicBox1.rotation.x += currentRotationSpeed.x;
-  // topicBox1.rotation.y += currentRotationSpeed.y;
-  // currentRotationSpeed.x *= dragFactor;
-  // currentRotationSpeed.y *= dragFactor;
+  // iterate through the meshArray and update rotation
+  meshArray.forEach((mesh, index) => {
+    updateRotation(mesh, index);
+  });
 
   if (debug) {
     topicBox1Debug.innerHTML = `X axis: ${topicBox1.rotation.x}`;
   }
 
-
-
-  // moon.rotation.x += 0.005;
-
-  // controls.update();
-
   mmi.update();
 
   renderer.render(scene, camera);
 }
-
-// initThree();
-// animate();
 
 // ^Animation Loop^ -------------------------------------------------
 
