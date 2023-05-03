@@ -5,12 +5,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // Import MouseMeshInteraction class
 import MouseMeshInteraction from './three_mmi';
 
-// Import Topic Box object
-import createTopicBox from './topicBox';
-
-// Import Info Box object
-import createInfoBox from './infoBox';
-
 // Info View
 let infoView = false;
 
@@ -42,7 +36,7 @@ const renderer = new THREE.WebGLRenderer({
 // pass threejs scene and camera to mmi
 const mmi = new MouseMeshInteraction(scene, camera);
 
-renderer.setPixelRatio(devicePixelRatio);
+renderer.setPixelRatio(pixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(0);
 camera.position.setX(0);
@@ -65,23 +59,6 @@ pointLight.position.set(5, 5, 5);
 
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
-
-
-// topicBox1 object -------------------------------------------------
-
-let topicBox1 = createTopicBox('/images/RightToRepair.jpg');
-let topicBox2 = createTopicBox('/images/Recycle-Logo.jpg');
-
-const meshArray = [topicBox1, topicBox2];
-
-topicBox1.position.z = -5;
-topicBox1.position.x = 0;
-
-topicBox2.position.z = -5;
-topicBox2.position.x = 100;
-
-scene.add(topicBox1);
-scene.add(topicBox2);
 
 
 
@@ -208,51 +185,8 @@ function animate() {
     updateRotation(mesh, index);
   });
 
-  if (debug) {
-    topicBox1Debug.innerHTML = `X axis: ${topicBox1.rotation.x}`;
-  }
 
   mmi.update();
 
   renderer.render(scene, camera);
 }
-
-// ^Animation Loop^ -------------------------------------------------
-
-// Helpers
-
-// const lightHelper = new THREE.PointLightHelper(pointLight)
-// const gridHelper = new THREE.GridHelper(200, 50);
-// scene.add(lightHelper, gridHelper)
-
-// const controls = new OrbitControls(camera, renderer.domElement);
-
-// Helper function to convert degrees to radians
-function toRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
-
-// ^ Helper functions ^ -------------------------------------------------
-
-// Key Controls -------------------------------------------------
-
-document.addEventListener('keydown', function(event) {
-  if (infoView === false) {
-    
-    if (event.key === 'ArrowRight') {
-      camera.position.x += 100;
-    }
-
-    if (camera.position.x != 0) {
-      if (event.key === 'ArrowLeft') {
-        camera.position.x += -100;
-      }
-    }
-  
-    
-
-  }
-  console.log('infoView:', infoView);
-});
-
-// ^ Key Controls ^ -------------------------------------------------
