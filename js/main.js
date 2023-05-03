@@ -5,6 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // Import MouseMeshInteraction class
 import MouseMeshInteraction from './three_mmi';
 
+// Create meshArray
+let meshArray = [];
+
 // Import Topic Box object
 import createTopicBox from './topicBox';
 
@@ -22,12 +25,6 @@ window.onload = function() {
   animate();
 }
 
-// Object Sizing
-export const pixelRatio = window.devicePixelRatio;
-export const cubeWidth = 1 / pixelRatio;
-
-console.log('pixelRatio:', pixelRatio);
-console.log('cubeWidth:', cubeWidth);
 
 const scene = new THREE.Scene();
 
@@ -67,18 +64,32 @@ const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
 
+// Object Sizing -------------------------------------------------
+export const pixelRatio = window.devicePixelRatio;
+export const topicBoxWidth = 1 / pixelRatio;
+
+export const screenWidth = window.innerWidth;
+export const topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
+
+console.log('pixelRatio:', pixelRatio);
+console.log('topicBoxWidth:', topicBoxWidth);
+console.log('screenWidth:', screenWidth);
+console.log('screenWidth:', screenWidth);
+// ^Object Sizing^ -------------------------------------------------
+
+
 // topicBox1 object -------------------------------------------------
 
 let topicBox1 = createTopicBox('/images/RightToRepair.jpg');
 let topicBox2 = createTopicBox('/images/Recycle-Logo.jpg');
 
-const meshArray = [topicBox1, topicBox2];
+meshArray = [topicBox1, topicBox2];
 
 topicBox1.position.z = -5;
 topicBox1.position.x = 0;
 
 topicBox2.position.z = -5;
-topicBox2.position.x = 100;
+topicBox2.position.x = topicBoxDistance;
 
 scene.add(topicBox1);
 scene.add(topicBox2);
@@ -240,12 +251,12 @@ document.addEventListener('keydown', function(event) {
   if (infoView === false) {
     
     if (event.key === 'ArrowRight') {
-      camera.position.x += 100;
+      camera.position.x += topicBoxDistance;
     }
 
     if (camera.position.x != 0) {
       if (event.key === 'ArrowLeft') {
-        camera.position.x += -100;
+        camera.position.x += -topicBoxDistance;
       }
     }
   

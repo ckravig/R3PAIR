@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 
-import { cubeWidth } from './main';
+import { topicBoxWidth } from './main';
 
 // Create Topic Box
 
 export default function createTopicBox(topicBoxMapPath) {
   const topicBoxMapTexture = new THREE.TextureLoader().load(topicBoxMapPath);
-  const geometry = new THREE.BoxGeometry(cubeWidth, cubeWidth, cubeWidth);
+  const geometry = new THREE.BoxGeometry(topicBoxWidth, topicBoxWidth, topicBoxWidth);
   const material = new THREE.MeshBasicMaterial({ map: topicBoxMapTexture });
   const mesh = new THREE.Mesh(geometry, material);
   
