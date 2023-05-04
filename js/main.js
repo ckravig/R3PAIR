@@ -1,15 +1,18 @@
 import '/style.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
 // Import MouseMeshInteraction class
 import MouseMeshInteraction from './three_mmi';
 
-// Create meshArray
-let meshArray = [];
+// Create topicBoxArray
+export let topicBoxArray = [];
 
 // Import Topic Box object
-import createTopicBox from './topicBox';
+import { createTopicBox } from './topicBox';
 
 // Import Info Box object
 import createInfoBox from './infoBox';
@@ -80,21 +83,38 @@ console.log('screenWidth:', screenWidth);
 
 // topicBox1 object -------------------------------------------------
 
-let topicBox1 = createTopicBox('/images/RightToRepair.jpg');
-let topicBox2 = createTopicBox('/images/Recycle-Logo.jpg');
+const topicBox1 = createTopicBox('/images/RightToRepair.jpg', 'Right to Repair');
+// const topicBox2 = createTopicBox('/images/Recycle-Logo.jpg', 'Benefits of Right to Repair');
 
-meshArray = [topicBox1, topicBox2];
-
-topicBox1.position.z = -5;
-topicBox1.position.x = 0;
-
-topicBox2.position.z = -5;
-topicBox2.position.x = topicBoxDistance;
+// topicBoxArray = [topicBox1.children[0], topicBox2.children[0]];
 
 scene.add(topicBox1);
-scene.add(topicBox2);
+// scene.add(topicBox2);
+
+console.log('topicBoxArray:', topicBoxArray);
 
 
+// // true type font loader
+// const fontLoader = new FontLoader();
+// const ttfLoader = new TTFLoader();
+// ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+//   // First parse the font.
+//   const poppinsFont = fontLoader.parse(json);
+//   // Use parsed font as normal.
+//   const textGeometry = new TextGeometry('hello world', {
+//     height: 0.05,
+//     size: 0.5,
+//     font: poppinsFont,
+//   });
+//   textGeometry.computeBoundingBox();
+//   const centerOffset = - 0.5 * (textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x);
+//   const textMaterial = new THREE.MeshNormalMaterial();
+//   const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+//   textMesh.position.x = centerOffset;
+//   textMesh.position.y = 1.25;
+//   textMesh.position.z = -5;
+//   scene.add(textMesh);
+// });
 
 
 
@@ -136,7 +156,7 @@ let selectedMesh = null;
 
 const currentRotationSpeeds = [];
 
-meshArray.forEach(mesh => {
+topicBoxArray.forEach(mesh => {
   currentRotationSpeeds.push({ x: 0, y: 0 });
 });
 
@@ -164,8 +184,8 @@ function onMouseMove(event) {
       x: event.clientX - previousMousePosition.x,
       y: event.clientY - previousMousePosition.y,
     };
-    currentRotationSpeeds[meshArray.indexOf(selectedMesh)].x = deltaMove.y * 0.01;
-    currentRotationSpeeds[meshArray.indexOf(selectedMesh)].y = deltaMove.x * 0.01;
+    currentRotationSpeeds[topicBoxArray.indexOf(selectedMesh)].x = deltaMove.y * 0.01;
+    currentRotationSpeeds[topicBoxArray.indexOf(selectedMesh)].y = deltaMove.x * 0.01;
   }
   previousMousePosition = {
     x: event.clientX,
@@ -214,8 +234,8 @@ function updateRotation(mesh, index) {
 function animate() {
   requestAnimationFrame(animate);
 
-  // iterate through the meshArray and update rotation
-  meshArray.forEach((mesh, index) => {
+  // iterate through the topicBoxArray and update rotation
+  topicBoxArray.forEach((mesh, index) => {
     updateRotation(mesh, index);
   });
 
@@ -260,7 +280,13 @@ document.addEventListener('keydown', function(event) {
       }
     }
   
-    
+    if (event.key === 'ArrowDown') {
+      camera.position.z += 1;
+    }
+
+    if (event.key === 'ArrowUp') {
+      camera.position.z -= 1;
+    }
 
   }
   console.log('infoView:', infoView);
