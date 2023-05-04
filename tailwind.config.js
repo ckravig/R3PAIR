@@ -9,7 +9,7 @@ const screenSizes = screenKeys.reduce((v, key) => Object.assign(v, {[key]: key})
 
 module.exports = {
   content: [
-    "./index.html",
+    "./*.html",
     "./js/*.{js,ts,jsx,tsx}",
   ],
   theme: {
