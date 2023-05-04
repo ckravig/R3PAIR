@@ -84,38 +84,26 @@ console.log('screenWidth:', screenWidth);
 // topicBox1 object -------------------------------------------------
 
 const topicBox1 = createTopicBox('/images/RightToRepair.jpg', 'Right to Repair');
-// const topicBox2 = createTopicBox('/images/Recycle-Logo.jpg', 'Benefits of Right to Repair');
+const topicBox2 = createTopicBox('/images/Recycle-Logo.jpg', 'Benefits');
 
-// topicBoxArray = [topicBox1.children[0], topicBox2.children[0]];
+topicBoxArray = [topicBox1.children[0], topicBox2.children[0]];
 
-scene.add(topicBox1);
+topicBoxArray.forEach(boxMesh => {
+  boxMesh.parent.position.z = -5;
+  boxMesh.parent.position.x = topicBoxDistance * topicBoxArray.indexOf(boxMesh);
+  scene.add(boxMesh.parent);
+});
+
+// topicBox1.position.z = -5;
+// topicBox1.position.x = 0;
+
+// topicBox2.position.z = -5;
+// topicBox2.position.x = topicBoxDistance;
+
+// scene.add(topicBox1);
 // scene.add(topicBox2);
 
 console.log('topicBoxArray:', topicBoxArray);
-
-
-// // true type font loader
-// const fontLoader = new FontLoader();
-// const ttfLoader = new TTFLoader();
-// ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
-//   // First parse the font.
-//   const poppinsFont = fontLoader.parse(json);
-//   // Use parsed font as normal.
-//   const textGeometry = new TextGeometry('hello world', {
-//     height: 0.05,
-//     size: 0.5,
-//     font: poppinsFont,
-//   });
-//   textGeometry.computeBoundingBox();
-//   const centerOffset = - 0.5 * (textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x);
-//   const textMaterial = new THREE.MeshNormalMaterial();
-//   const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-//   textMesh.position.x = centerOffset;
-//   textMesh.position.y = 1.25;
-//   textMesh.position.z = -5;
-//   scene.add(textMesh);
-// });
-
 
 
 if (debug) {
@@ -293,3 +281,37 @@ document.addEventListener('keydown', function(event) {
 });
 
 // ^ Key Controls ^ -------------------------------------------------
+
+// Camera Controls -------------------------------------------------
+let isMiddleMouseButtonDown = false;
+let preMousePosition = {
+  x: 0,
+  y: 0
+};
+
+if (debug) {
+  document.addEventListener('mousedown', (event) => {
+    if (event.button === THREE.MOUSE.MIDDLE) {
+      isMiddleMouseButtonDown = true;
+      preMousePosition.x = event.clientX;
+      preMousePosition.y = event.clientY;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isMiddleMouseButtonDown = false;
+  });
+
+  document.addEventListener('mousemove', (event) => {
+    if (isMiddleMouseButtonDown) {
+      const deltaX = event.clientX - preMousePosition.x;
+      const deltaY = event.clientY - preMousePosition.y;
+      camera.rotation.y -= deltaX * 0.01;
+      camera.rotation.x -= deltaY * 0.01;
+      preMousePosition.x = event.clientX;
+      preMousePosition.y = event.clientY;
+    }
+  });
+}
+// ^ Camera Controls ^ -------------------------------------------------
+

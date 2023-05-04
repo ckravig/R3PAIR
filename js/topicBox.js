@@ -3,11 +3,10 @@ import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
-import { topicBoxWidth, topicBoxArray, topicBoxDistance } from './main';
+import { topicBoxWidth } from './main';
 
 // Define createTopicBox method
 export function createTopicBox(imageUrl, text) {
-  // Container to store meshes
   const container = new THREE.Object3D();
 
   const textureLoader = new THREE.TextureLoader();
@@ -24,9 +23,7 @@ export function createTopicBox(imageUrl, text) {
   // add a name property
   boxMesh.name = 'topicBox';
 
-
   container.add(boxMesh);
-  
 
   if (text) {
     const fontLoader = new FontLoader();
@@ -37,7 +34,7 @@ export function createTopicBox(imageUrl, text) {
       // Use parsed font as normal.
       const textGeometry = new TextGeometry(text, {
         height: 0.05,
-        size: 0.5,
+        size: 0.25,
         font: poppinsFont,
       });
       textGeometry.computeBoundingBox();
@@ -45,8 +42,8 @@ export function createTopicBox(imageUrl, text) {
       const textMaterial = new THREE.MeshNormalMaterial();
       const textMesh = new THREE.Mesh(textGeometry, textMaterial);
       textMesh.position.x = centerOffset;
-      textMesh.position.y = 1.25;
-      textMesh.position.z = -5;
+      textMesh.position.y = 0.75;
+      textMesh.position.z = 2;
 
       textMesh.name = 'topicBoxText';
 
@@ -54,14 +51,6 @@ export function createTopicBox(imageUrl, text) {
     });
   }
 
-    // Append container to topicBoxArray
-    topicBoxArray.push(container);
-
-    // Set x position based on index in array
-    const index = topicBoxArray.indexOf(container) -1;
-    container.position.x = index * topicBoxDistance;
-    container.position.z = -5;
-    console.log('index:', index);
   
 
   return container;
@@ -83,8 +72,6 @@ export function createTopicBox(imageUrl, text) {
 //   // add a name property
 //   mesh.name = 'topicBox';
 
-//   // Add topic box mesh to group
-//   group.add(mesh);
 
 //     // Add text mesh to group
 //     if (text) {
