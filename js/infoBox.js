@@ -5,13 +5,13 @@ const title = document.getElementById('infoBoxTitle');
 const content = document.getElementById('infoBoxContent');
 
 export default function createInfoBox(meshID) {
-  if (meshID === topicBoxArray[0].id) {
+  if (meshID === 27) {
     title.innerHTML = 'Right to Repair';
     content.innerText = 'New content goes here';
     console.log('InfoBoxMeshID:', topicBoxArray[0].id);
   }
 
-  if (meshID === topicBoxArray[1].id) {
+  if (meshID === 29) {
     title.innerHTML = 'Benefits of Right to Repair';
     content.innerText = 'New content goes here';
   }

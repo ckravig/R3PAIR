@@ -4,12 +4,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // Import MouseMeshInteraction class
 import MouseMeshInteraction from './three_mmi';
 
 // Create topicBoxArray
 export let topicBoxArray = [];
+
+// Create topicContainerArray
+export let topicContainerArray = [];
 
 // Import Topic Box object
 import { createTopicBox } from './topicBox';
@@ -24,10 +28,6 @@ let infoView = false;
 const debug = false;
 
 // Setup
-window.onload = function() {
-  animate();
-}
-
 
 const scene = new THREE.Scene();
 
@@ -49,14 +49,76 @@ camera.position.setX(0);
 
 renderer.render(scene, camera);
 
-// Window resize event listener
+// Helper function to convert degrees to radians
+function degToRad(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+const visibleHeightAtZDepth = ( depth, camera ) => {
+  // compensate for cameras not positioned at z=0
+  const cameraOffset = camera.position.z;
+  if ( depth < cameraOffset ) depth -= cameraOffset;
+  else depth += cameraOffset;
+
+  // vertical fov in radians
+  const vFOV = camera.fov * Math.PI / 180; 
+
+  // Math.abs to ensure the result is always positive
+  return 2 * Math.tan( vFOV / 2 ) * Math.abs( depth );
+};
+
+const visibleWidthAtZDepth = ( depth, camera ) => {
+  const height = visibleHeightAtZDepth( depth, camera );
+  return height * camera.aspect;
+};
+
+let visibleHeight, visibleWidth, pixelRatio, topicBoxWidth, screenWidth, topicBoxDistance;
+
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+
+  visibleHeight = visibleHeightAtZDepth( -5, camera );
+  visibleWidth = visibleWidthAtZDepth( -5, camera );
+  console.log('visibleHeightAtZDepth:', visibleHeight);
+  console.log('visibleWidthAtZDepth:', visibleWidth);
+
+  // Object Sizing -------------------------------------------------
+  pixelRatio = window.devicePixelRatio;
+  topicBoxWidth = visibleWidth / 10;
+
+  screenWidth = visibleWidth;
+  topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
+
+  console.log('pixelRatio:', pixelRatio);
+  console.log('topicBoxWidth:', topicBoxWidth);
+  console.log('screenWidth:', screenWidth);
+  console.log('screenWidth:', screenWidth);
+  // ^Object Sizing^ -------------------------------------------------
 }
 
 window.addEventListener('resize', onWindowResize);
+
+// ^ Helper functions ^ -------------------------------------------------
+
+onWindowResize();
+window.onload = function() {
+  onWindowResize();
+  animate();
+}
+
+// Sizing -------------------------------------------------
+
+// let width = pixelsToUnits(window.innerWidth, camera);
+// let height = pixelsToUnits(window.innerHeight, camera);
+
+// console.log('width:', width);
+// console.log('height:', height);
+
+// ^Sizing^ -------------------------------------------------
+
+
 
 // Lights
 
@@ -66,26 +128,30 @@ pointLight.position.set(5, 5, 5);
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
+// load the GLTF model
+const gltfLoader = new GLTFLoader();
 
-// Object Sizing -------------------------------------------------
-export const pixelRatio = window.devicePixelRatio;
-export const topicBoxWidth = 1 / pixelRatio;
 
-export const screenWidth = window.innerWidth;
-export const topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
+// // Object Sizing -------------------------------------------------
+// export let pixelRatio = window.devicePixelRatio;
+// export let topicBoxWidth = 1 / pixelRatio;
 
-console.log('pixelRatio:', pixelRatio);
-console.log('topicBoxWidth:', topicBoxWidth);
-console.log('screenWidth:', screenWidth);
-console.log('screenWidth:', screenWidth);
-// ^Object Sizing^ -------------------------------------------------
+// export let screenWidth = window.innerWidth;
+// export let topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
+
+// console.log('pixelRatio:', pixelRatio);
+// console.log('topicBoxWidth:', topicBoxWidth);
+// console.log('screenWidth:', screenWidth);
+// console.log('screenWidth:', screenWidth);
+// // ^Object Sizing^ -------------------------------------------------
 
 
 // topicBox1 object -------------------------------------------------
 
-const topicBox1 = createTopicBox('/images/RightToRepair.jpg', 'Right to Repair');
-const topicBox2 = createTopicBox('/images/Recycle-Logo.jpg', 'Benefits');
+const topicBox1 = createTopicBox(topicBoxWidth, '/images/RightToRepair.jpg', 'Right to Repair');
+const topicBox2 = createTopicBox(topicBoxWidth, '/images/Recycle-Logo.jpg', 'Benefits');
 
+topicContainerArray = [topicBox1, topicBox2];
 topicBoxArray = [topicBox1.children[0], topicBox2.children[0]];
 
 topicBoxArray.forEach(boxMesh => {
@@ -104,6 +170,7 @@ topicBoxArray.forEach(boxMesh => {
 // scene.add(topicBox2);
 
 console.log('topicBoxArray:', topicBoxArray);
+console.log('topicContainerArray:', topicContainerArray);
 
 
 if (debug) {
@@ -215,12 +282,75 @@ function updateRotation(mesh, index) {
     }
   }
 }
-// ^Topic Box Mouse Drag^ -------------------------------------------------
+// ^Topic Box Mouse Drag^ ------------------------------------------------
+
+
+// Wrecnch Background -------------------------------------------------
+
+const wrenches = [];
+const numColumns = 10;
+const columnSpacing = visibleWidthAtZDepth( -5, camera ) / numColumns;
+const startY = 15; // highest starting y-value
+const endY = -10; // lowest y-value where wrenches can appear
+
+console.log("Loading wrench model...");
+
+gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
+  console.log("Wrench model loaded successfully.");
+  const wrench = gltf.scene.children[0];
+  const numWrenches = numColumns * Math.ceil(visibleHeightAtZDepth(-5, camera) / columnSpacing);
+
+  const numRows = Math.ceil(numWrenches / numColumns); // round up to ensure we have enough wrenches
+  const rowSpacing = (startY - endY) / numRows;
+
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numColumns; col++) {
+      const instance = wrench.clone();
+      instance.scale.set(0.01, 0.01, 0.01);
+      instance.position.x = -visibleWidthAtZDepth(-5, camera) / 2 + col * columnSpacing;
+      instance.position.y = startY - row * rowSpacing;
+      instance.position.z = -5;
+      scene.add(instance);
+      wrenches.push(instance);
+    }
+  }
+}, undefined, (error) => {
+  console.log("Error loading wrench model:", error);
+});
+
+
+
+
+
+// ^Wrecnch Background^ -------------------------------------------------
+
 
 // Animation Loop -------------------------------------------------
 
 function animate() {
   requestAnimationFrame(animate);
+
+  wrenches.forEach(element => {
+
+    // make the element fall towards the bottom of the screen
+    element.position.y -= 0.01;
+  
+    // define a random axis of rotation and a random rotation speed for each element
+    if (!element.userData.axis) {
+      element.userData.axis = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+      element.userData.rotationSpeed = Math.random() * 0.05;
+    }
+  
+    // rotate the element in its own random axis and speed
+    element.rotateOnAxis(element.userData.axis, element.userData.rotationSpeed);
+  
+    // reset the element's position and userData if it falls off the bottom of the screen
+    if (element.position.y < -10) {
+      element.position.y = 10;
+      element.userData = {};
+    }
+  });
+  
 
   // iterate through the topicBoxArray and update rotation
   topicBoxArray.forEach((mesh, index) => {
@@ -246,25 +376,27 @@ function animate() {
 
 // const controls = new OrbitControls(camera, renderer.domElement);
 
-// Helper function to convert degrees to radians
-function toRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
 
-// ^ Helper functions ^ -------------------------------------------------
 
 // Key Controls -------------------------------------------------
 
 document.addEventListener('keydown', function(event) {
   if (infoView === false) {
-    
     if (event.key === 'ArrowRight') {
       camera.position.x += topicBoxDistance;
+
+      wrenches.forEach((wrench) => {
+        wrench.position.x += topicBoxDistance;
+      });
     }
 
     if (camera.position.x != 0) {
       if (event.key === 'ArrowLeft') {
-        camera.position.x += -topicBoxDistance;
+        camera.position.x -= topicBoxDistance;
+
+        wrenches.forEach((wrench) => {
+          wrench.position.x -= topicBoxDistance;
+        });
       }
     }
   
@@ -275,9 +407,7 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowUp') {
       camera.position.z -= 1;
     }
-
   }
-  console.log('infoView:', infoView);
 });
 
 // ^ Key Controls ^ -------------------------------------------------

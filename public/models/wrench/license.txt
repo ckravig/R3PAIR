@@ -1,0 +1,11 @@
+Model Information:
+* title:	Adjustable Spanner/Wrench
+* source:	https://sketchfab.com/3d-models/adjustable-spannerwrench-e13f98a9d7364510a65042d4c42e7a9c
+* author:	CGWorker (https://sketchfab.com/CGWorker)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Adjustable Spanner/Wrench" (https://sketchfab.com/3d-models/adjustable-spannerwrench-e13f98a9d7364510a65042d4c42e7a9c) by CGWorker (https://sketchfab.com/CGWorker) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

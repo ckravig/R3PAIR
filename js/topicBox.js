@@ -3,10 +3,8 @@ import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
-import { topicBoxWidth } from './main';
-
 // Define createTopicBox method
-export function createTopicBox(imageUrl, text) {
+export function createTopicBox(topicBoxWidth, imageUrl, text) {
   const container = new THREE.Object3D();
 
   const textureLoader = new THREE.TextureLoader();
@@ -50,8 +48,6 @@ export function createTopicBox(imageUrl, text) {
       container.add(textMesh);
     });
   }
-
-  
 
   return container;
 }
