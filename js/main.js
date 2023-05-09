@@ -289,18 +289,18 @@ function updateRotation(mesh, index) {
 
 const wrenches = [];
 const numColumns = 10;
-const columnSpacing = visibleWidthAtZDepth( -5, camera ) / numColumns;
-const startY = 15; // highest starting y-value
-const endY = -10; // lowest y-value where wrenches can appear
+const columnSpacing = visibleWidthAtZDepth(-5, camera) / numColumns;
+const startY = visibleHeight / 2 - columnSpacing; // calculate startY based on visible height
+const endY = -visibleHeight / 2 + columnSpacing; // calculate endY based on visible height
 
 console.log("Loading wrench model...");
 
 gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
   console.log("Wrench model loaded successfully.");
   const wrench = gltf.scene.children[0];
-  const numWrenches = numColumns * Math.ceil(visibleHeightAtZDepth(-5, camera) / columnSpacing);
+  const numWrenches = numColumns * Math.ceil(visibleHeight / columnSpacing);
 
-  const numRows = Math.ceil(numWrenches / numColumns); // round up to ensure we have enough wrenches
+  const numRows = Math.ceil(numWrenches / numColumns);
   const rowSpacing = (startY - endY) / numRows;
 
   for (let row = 0; row < numRows; row++) {
@@ -314,23 +314,14 @@ gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
       wrenches.push(instance);
     }
   }
+
 }, undefined, (error) => {
   console.log("Error loading wrench model:", error);
 });
 
-
-
-
-
-// ^Wrecnch Background^ -------------------------------------------------
-
-
-// Animation Loop -------------------------------------------------
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  wrenches.forEach(element => {
+ // animate the wrenches falling down the screen
+ function animateWrenches() {
+    wrenches.forEach(element => {
 
     // make the element fall towards the bottom of the screen
     element.position.y -= 0.01;
@@ -345,12 +336,23 @@ function animate() {
     element.rotateOnAxis(element.userData.axis, element.userData.rotationSpeed);
   
     // reset the element's position and userData if it falls off the bottom of the screen
-    if (element.position.y < -10) {
-      element.position.y = 10;
-      element.userData = {};
+    if (element.position.y < endY) {
+      element.position.y = startY;
     }
   });
-  
+}
+
+
+
+// ^Wrecnch Background^ -------------------------------------------------
+
+
+// Animation Loop -------------------------------------------------
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  animateWrenches();
 
   // iterate through the topicBoxArray and update rotation
   topicBoxArray.forEach((mesh, index) => {
