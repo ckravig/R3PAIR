@@ -33,7 +33,11 @@ module.exports = {
         },
         { values: Object.assign(screenSizes, theme('screenSize', {})) }
       )
-    })
+    }),
+    require('tailwind-scrollbar'),
   ],
+  variants: {
+    scrollbar: ['rounded']
+  }
 }
 

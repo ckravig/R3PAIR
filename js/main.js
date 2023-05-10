@@ -21,11 +21,15 @@ import { createTopicBox } from './topicBox';
 // Import Info Box object
 import createInfoBox from './infoBox';
 
+// Initiate wrenches vars
+let wrenches = [];
+let startY, endY;
+
 // Info View
 let infoView = false;
 
 // Debug const
-const debug = false;
+const debug = true;
 
 // Setup
 
@@ -48,6 +52,8 @@ camera.position.setZ(0);
 camera.position.setX(0);
 
 renderer.render(scene, camera);
+
+// Helper functions -------------------------------------------------
 
 // Helper function to convert degrees to radians
 function degToRad(degrees) {
@@ -74,7 +80,7 @@ const visibleWidthAtZDepth = ( depth, camera ) => {
 
 let visibleHeight, visibleWidth, pixelRatio, topicBoxWidth, screenWidth, topicBoxDistance;
 
-function onWindowResize() {
+async function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -96,13 +102,31 @@ function onWindowResize() {
   console.log('screenWidth:', screenWidth);
   console.log('screenWidth:', screenWidth);
   // ^Object Sizing^ -------------------------------------------------
+
+  topicContainerArray.forEach(container => {
+    container.position.x = topicBoxDistance * topicContainerArray.indexOf(container);
+  });
+
+  await recreateWrenchBackground();
+
 }
 
 window.addEventListener('resize', onWindowResize);
 
 // ^ Helper functions ^ -------------------------------------------------
 
-onWindowResize();
+// Lights
+
+const pointLight = new THREE.PointLight(0xffffff);
+pointLight.position.set(5, 5, 5);
+
+const ambientLight = new THREE.AmbientLight(0xffffff);
+scene.add(pointLight, ambientLight);
+
+// load the GLTF model
+const gltfLoader = new GLTFLoader();
+
+// onWindowResize();
 window.onload = function() {
   onWindowResize();
   animate();
@@ -120,16 +144,7 @@ window.onload = function() {
 
 
 
-// Lights
 
-const pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(5, 5, 5);
-
-const ambientLight = new THREE.AmbientLight(0xffffff);
-scene.add(pointLight, ambientLight);
-
-// load the GLTF model
-const gltfLoader = new GLTFLoader();
 
 
 // // Object Sizing -------------------------------------------------
@@ -171,16 +186,6 @@ topicBoxArray.forEach(boxMesh => {
 
 console.log('topicBoxArray:', topicBoxArray);
 console.log('topicContainerArray:', topicContainerArray);
-
-
-if (debug) {
-  const topicBox1Debug = document.createElement('div');
-  topicBox1Debug.setAttribute('id', 'topicBox1Debug');
-  topicBox1Debug.innerHTML = 'Right to Repair';
-
-  // Add the div to an existing element with id "main"
-  document.getElementById('main').appendChild(topicBox1Debug);
-}
 
 // create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
 mmi.addHandler('topicBox', 'click', function(mesh) {
@@ -285,56 +290,84 @@ function updateRotation(mesh, index) {
 // ^Topic Box Mouse Drag^ ------------------------------------------------
 
 
-// Wrecnch Background -------------------------------------------------
+// Wrench Background -------------------------------------------------
 
-const wrenches = [];
-const numColumns = 10;
-const columnSpacing = visibleWidthAtZDepth(-5, camera) / numColumns;
-const startY = visibleHeight / 2 - columnSpacing; // calculate startY based on visible height
-const endY = -visibleHeight / 2 + columnSpacing; // calculate endY based on visible height
+function createWrenchBackground() {
+  // reset wrenches array
+  wrenches = [];
 
-console.log("Loading wrench model...");
+  let preferredWrenchDensity = 3; // number of wrenches per visible height
 
-gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
-  console.log("Wrench model loaded successfully.");
-  const wrench = gltf.scene.children[0];
-  const numWrenches = numColumns * Math.ceil(visibleHeight / columnSpacing);
+  const maxWrenchWidth = 0.01; // maximum width of the wrench model
+  const minColumnSpacing = maxWrenchWidth * (preferredWrenchDensity * 25); // minimum column spacing for wrenches
 
-  const numRows = Math.ceil(numWrenches / numColumns);
-  const rowSpacing = (startY - endY) / numRows;
+  // calculate the number of columns based on the visible width and minimum column spacing
+  // let numColumns = 10;
+  let numColumns = Math.floor(visibleWidth / minColumnSpacing);
 
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numColumns; col++) {
-      const instance = wrench.clone();
-      instance.scale.set(0.01, 0.01, 0.01);
-      instance.position.x = -visibleWidthAtZDepth(-5, camera) / 2 + col * columnSpacing;
-      instance.position.y = startY - row * rowSpacing;
-      instance.position.z = -5;
-      scene.add(instance);
-      wrenches.push(instance);
-    }
-  }
+  // ensure that there are at least 3 columns
+  numColumns = Math.max(numColumns, 3);
 
-}, undefined, (error) => {
-  console.log("Error loading wrench model:", error);
-});
+  const columnSpacing = visibleWidth / numColumns;
+  const maxWrenchHeight = maxWrenchWidth * visibleHeight / visibleWidth; // maximum height of the wrench model based on aspect ratio
 
- // animate the wrenches falling down the screen
- function animateWrenches() {
-    wrenches.forEach(element => {
+  const padding = 0.5; // set the amount of padding to half the maximum wrench height
 
-    // make the element fall towards the bottom of the screen
-    element.position.y -= 0.01;
+  startY = visibleHeight / 2 + padding;
+  endY = -visibleHeight / 2 - padding;
   
+  gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
+    console.log("Wrench model loaded successfully.");
+    const wrench = gltf.scene.children[0];
+    const numWrenches = numColumns * Math.ceil(visibleHeight * preferredWrenchDensity);
+
+    const numRows = Math.ceil(numWrenches / numColumns);
+    const rowSpacing = (startY - endY) / numRows;
+
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numColumns; col++) {
+        const instance = wrench.clone();
+        instance.scale.set(maxWrenchWidth, maxWrenchWidth, maxWrenchWidth * visibleHeight / visibleWidth);
+        instance.position.x = -visibleWidth / 2 + col * columnSpacing + columnSpacing / 2;
+        instance.position.y = startY - row * rowSpacing;
+        instance.position.z = -5;
+        scene.add(instance);
+        wrenches.push(instance);
+      }
+    }
+  }, undefined, (error) => {
+    console.log("Error loading wrench model:", error);
+  });
+}
+
+async function recreateWrenchBackground() {
+  // Remove existing wrenches from the scene
+  await Promise.all(wrenches.map(wrench => {
+    return new Promise(resolve => {
+      scene.remove(wrench);
+      resolve();
+    });
+  }));
+
+  // Recreate the wrench background with new visibleWidth and visibleHeight values
+  createWrenchBackground();
+}
+
+// animate the wrenches falling down the screen
+function animateWrenches() {
+  wrenches.forEach(element => {
+    // make the element fall towards the bottom of the screen
+    element.position.y -= 0.005; // fall speed
+    
     // define a random axis of rotation and a random rotation speed for each element
     if (!element.userData.axis) {
       element.userData.axis = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
       element.userData.rotationSpeed = Math.random() * 0.05;
     }
-  
+    
     // rotate the element in its own random axis and speed
     element.rotateOnAxis(element.userData.axis, element.userData.rotationSpeed);
-  
+    
     // reset the element's position and userData if it falls off the bottom of the screen
     if (element.position.y < endY) {
       element.position.y = startY;
@@ -342,9 +375,7 @@ gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
   });
 }
 
-
-
-// ^Wrecnch Background^ -------------------------------------------------
+// ^Wrench Background^ -------------------------------------------------
 
 
 // Animation Loop -------------------------------------------------
@@ -358,10 +389,6 @@ function animate() {
   topicBoxArray.forEach((mesh, index) => {
     updateRotation(mesh, index);
   });
-
-  if (debug) {
-    topicBox1Debug.innerHTML = `X axis: ${topicBox1.rotation.x}`;
-  }
 
   mmi.update();
 
@@ -380,48 +407,48 @@ function animate() {
 
 
 
-// Key Controls -------------------------------------------------
+// Standard Controls -------------------------------------------------
 
 document.addEventListener('keydown', function(event) {
   if (infoView === false) {
     if (event.key === 'ArrowRight') {
       camera.position.x += topicBoxDistance;
 
+      // move wrenches
       wrenches.forEach((wrench) => {
         wrench.position.x += topicBoxDistance;
       });
     }
 
-    if (camera.position.x != 0) {
+    // prevent camera from moving past topicBox1
+    if (camera.position.x != topicBox1.position.x) {
       if (event.key === 'ArrowLeft') {
         camera.position.x -= topicBoxDistance;
 
+        // move wrenches
         wrenches.forEach((wrench) => {
           wrench.position.x -= topicBoxDistance;
         });
       }
     }
-  
-    if (event.key === 'ArrowDown') {
-      camera.position.z += 1;
-    }
-
-    if (event.key === 'ArrowUp') {
-      camera.position.z -= 1;
-    }
+    
   }
 });
 
-// ^ Key Controls ^ -------------------------------------------------
+// ^ Standard Controls ^ -------------------------------------------------
 
-// Camera Controls -------------------------------------------------
-let isMiddleMouseButtonDown = false;
-let preMousePosition = {
-  x: 0,
-  y: 0
-};
+// Debug Menu -------------------------------------------------
 
 if (debug) {
+
+// Camera Controls -------------------------------------------------
+  let isMiddleMouseButtonDown = false;
+  let preMousePosition = {
+    x: 0,
+    y: 0
+  };
+
+
   document.addEventListener('mousedown', (event) => {
     if (event.button === THREE.MOUSE.MIDDLE) {
       isMiddleMouseButtonDown = true;
@@ -444,6 +471,27 @@ if (debug) {
       preMousePosition.y = event.clientY;
     }
   });
-}
+
+  document.addEventListener('keydown', function(event) {
+    if (debug) {
+      if (event.key === 'ArrowDown') {
+        camera.position.z += 1;
+      }
+  
+      if (event.key === 'ArrowUp') {
+        camera.position.z -= 1;
+      }
+    }
+      
+  });
+
 // ^ Camera Controls ^ -------------------------------------------------
 
+// FPS Count -------------------------------------------------
+
+
+
+// ^ FPS Count ^ -------------------------------------------------
+
+}
+// ^ Debug Menu ^ -------------------------------------------------

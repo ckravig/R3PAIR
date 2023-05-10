@@ -28,18 +28,20 @@
         <a href="https://ckravig.com" target="_blank">Collin Kravig</a>
       </div>
 
-      <div id="infoBox" class="invisible relative w-screen-75 h-screen-75 bg-gray-300 text-black overflow-y-scroll">
-      <h2 id="infoBoxTitle" class="p-10 text-4xl text-center"></h2>
-      <p id="infoBoxContent" class="pr-60 text-lg text-justify px-32"></p>
-
-      <button type="button" id="infoBoxCloseButton" class="absolute top-4 right-4 rounded-md p-2 items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-        <span class="sr-only">Close menu</span>
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
+      <div id="infoBox" class="ml-[20%] mr-[40%] relative scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full invisible rounded-lg w-screen-75 h-screen-75 bg-gray-300 text-black overflow-y-scroll">
+        <button type="button" id="infoBoxCloseButton" class="sticky top-4 left-[95%] rounded-md p-2 items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+          <span class="sr-only">Close menu</span>
+          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <h2 id="infoBoxTitle" class="text-4xl pt-5 text-center"></h2>
+        <p id="infoBoxContent" class="p-16 text-lg"></p>
+        <canvas id="info3D" class="w-[100%] h-[100%]">
+          <p id="info3DContent"></p>
+        </canvas>
       </div>
+      
       
 
     </main>
