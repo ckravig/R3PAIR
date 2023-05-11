@@ -211,12 +211,12 @@ ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
 });
 
 
-// Vite.js text
+// Vite text
 ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
   // First parse the font.
   const poppinsFont = fontLoader.parse(json);
   // Use parsed font as normal.
-  const textGeometry = new TextGeometry('Vite.js', {
+  const textGeometry = new TextGeometry('Vite', {
     height: 0.05,
     size: 0.25,
     font: poppinsFont,
@@ -230,7 +230,7 @@ ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
   textMesh.position.y = -visibleHeight * 0.25;
   textMesh.position.x = centerOffset;
   textMesh.position.z = camera.position.z - 5;
-  textMesh.name = 'threejsText';
+  textMesh.name = 'viteText';
   scene.add(textMesh);
 });
 
@@ -255,13 +255,33 @@ ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
   textMesh.position.y = -visibleHeight * 0.25;
   textMesh.position.x = (visibleWidth / 3) - modelOffset;
   textMesh.position.z = camera.position.z - 5;
-  textMesh.name = 'threejsText';
+  textMesh.name = 'tailwindcssText';
   scene.add(textMesh);
 });
 
 // ^ Text ^ -------------------------------------------------
 
+// mmi -------------------------------------------------
 
+// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+mmi.addHandler('threejsText', 'click', function(mesh) {
+  console.log('mesh:', mesh);
+  window.open('https://threejs.org', '_blank');
+});
+
+// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+mmi.addHandler('viteText', 'click', function(mesh) {
+  console.log('mesh:', mesh);
+  window.open('https://vitejs.dev', '_blank');
+});
+
+// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+mmi.addHandler('tailwindcssText', 'click', function(mesh) {
+  console.log('mesh:', mesh);
+  window.open('https://tailwindcss.com', '_blank');
+});
+
+// ^ mmi ^ -------------------------------------------------
 
 
 
