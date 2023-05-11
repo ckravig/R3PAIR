@@ -19,7 +19,7 @@ export let topicContainerArray = [];
 import { createTopicBox } from './topicBox';
 
 // Import Info Box object
-import createInfoBox from './infoBox';
+import { createInfoBox } from './infoBox';
 
 // Initiate wrenches vars
 let wrenches = [];
@@ -35,7 +35,7 @@ const debug = true;
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#canvas'),
@@ -147,27 +147,107 @@ window.onload = function() {
 
 
 
-// // Object Sizing -------------------------------------------------
-// export let pixelRatio = window.devicePixelRatio;
-// export let topicBoxWidth = 1 / pixelRatio;
+// InfoBox Objects -------------------------------------------------
 
-// export let screenWidth = window.innerWidth;
-// export let topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
+function generateInfoModel(scene, meshID) {
+  const infoDepth = -2;
 
-// console.log('pixelRatio:', pixelRatio);
-// console.log('topicBoxWidth:', topicBoxWidth);
-// console.log('screenWidth:', screenWidth);
-// console.log('screenWidth:', screenWidth);
-// // ^Object Sizing^ -------------------------------------------------
+  let infoVisibleHeight = visibleHeightAtZDepth(infoDepth, camera);
+  let infoVisibleWidth = visibleWidthAtZDepth(infoDepth, camera);
+
+  const infoContainer = new THREE.Object3D();
+  infoContainer.name = 'infoContainer';
+
+  // create a grey material
+  const rectangleMaterial = new THREE.MeshBasicMaterial({ color: 0xd1d5db });
+
+  // create a rectangle geometry
+  const rectangleGeometry = new THREE.PlaneGeometry(1, 1);
+
+  // create a rectangle mesh using the geometry and material
+  const infoRectangle = new THREE.Mesh(rectangleGeometry, rectangleMaterial);
+
+  // position the rectangle
+  const containerWidth = infoVisibleWidth * 0.75;
+  infoContainer.position.x = -(infoVisibleWidth - containerWidth) / 2;
+  infoRectangle.position.x = containerWidth / 2;
+  infoRectangle.position.z = infoDepth;
+
+  console.log('infoVisibleWidth:', infoVisibleWidth);
+
+  // set name of the rectangle
+  infoRectangle.name = 'infoRectangle';
+
+  function addInfoRectangle() {
+    // add the rectangle mesh to the container
+    infoContainer.add(infoRectangle);
+  }
+
+  // model
+  const infoGltfLoader = new GLTFLoader();
+  if (meshID === topicBoxArray[0].id || meshID === 27) {
+    infoGltfLoader.load('/models/wrench/scene.gltf', (infoGltf) => {
+      let infoModel = infoGltf.scene.children[0];
+      console.log("Info model loaded successfully.");
+      infoModel.scale.set(0.02, 0.02, 0.02);
+      infoModel.position.x = containerWidth / 2;
+      infoModel.position.z = infoDepth;
+      infoModel.position.y = 0;
+      infoModel.rotateX(degToRad(90));
+      infoModel.rotateZ(degToRad(-90));
+      infoModel.name = 'infoModel';
+      addInfoRectangle();
+      infoContainer.add(infoModel);
+    }, undefined, (error) => {
+      console.log("Error loading info model:", error);
+    });
+  } else if (meshID === 29 || meshID === topicBoxArray[1].id) {
+    infoGltfLoader.load('/models/wallE/scene.gltf', (infoGltf) => {
+      let infoModel = infoGltf.scene.children[0];
+      console.log("Info model loaded successfully.");
+      infoModel.scale.set(0.009, 0.009, 0.009);
+      infoModel.position.x = containerWidth / 2;
+      infoModel.position.z = infoDepth;
+      infoModel.position.y = -0.25;
+      infoModel.name = 'infoModel';
+      infoContainer.add(infoModel);
+    }, undefined, (error) => {
+      console.log("Error loading info model:", error);
+    });
+
+  }
+
+  // move infoContainer to camera position
+  infoContainer.position.x += camera.position.x;
+  
+
+  // add the container to the scene
+  scene.add(infoContainer);
+}
+
+function closeInfoContainer() {
+  const infoContainer = scene.getObjectByName('infoContainer');
+  if (infoContainer) {
+    scene.remove(infoContainer);
+  }
+}
 
 
-// topicBox1 object -------------------------------------------------
+// ^ InfoBox Objects ^ -------------------------------------------------
+
+
+// topicBox objects -------------------------------------------------
 
 const topicBox1 = createTopicBox(topicBoxWidth, '/images/RightToRepair.jpg', 'Right to Repair');
 const topicBox2 = createTopicBox(topicBoxWidth, '/images/Recycle-Logo.jpg', 'Benefits');
+const topicBox3 = createTopicBox(topicBoxWidth, '/images/tractor.png', 'Tractors?');
 
-topicContainerArray = [topicBox1, topicBox2];
-topicBoxArray = [topicBox1.children[0], topicBox2.children[0]];
+
+topicContainerArray = [topicBox1, topicBox2, topicBox3];
+
+topicContainerArray.forEach(container => {
+  topicBoxArray.push(container.children[0]);
+});
 
 topicBoxArray.forEach(boxMesh => {
   boxMesh.parent.position.z = -5;
@@ -192,6 +272,7 @@ mmi.addHandler('topicBox', 'click', function(mesh) {
 
   createInfoBox(mesh.id);
   infoView = true;
+  generateInfoModel(scene, mesh.id)
     
   console.log('infoView:', infoView);
   console.log('mesh:', mesh);
@@ -203,6 +284,7 @@ const infoBox = document.getElementById('infoBox');
 closeButton.addEventListener('click', () => {
 	infoBox.style.visibility = 'hidden';
   infoView = false;
+  closeInfoContainer(scene);
   console.log('infoView:', infoView);
 });
 
@@ -495,3 +577,4 @@ if (debug) {
 
 }
 // ^ Debug Menu ^ -------------------------------------------------
+
