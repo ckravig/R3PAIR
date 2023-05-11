@@ -196,8 +196,8 @@ function generateInfoModel(scene, meshID) {
       infoModel.rotateX(degToRad(90));
       infoModel.rotateZ(degToRad(-90));
       infoModel.name = 'infoModel';
-      addInfoRectangle();
       infoContainer.add(infoModel);
+      addInfoRectangle();
     }, undefined, (error) => {
       console.log("Error loading info model:", error);
     });
@@ -223,6 +223,7 @@ function generateInfoModel(scene, meshID) {
 
   // add the container to the scene
   scene.add(infoContainer);
+
 }
 
 function closeInfoContainer() {
@@ -272,7 +273,8 @@ mmi.addHandler('topicBox', 'click', function(mesh) {
 
   createInfoBox(mesh.id);
   infoView = true;
-  generateInfoModel(scene, mesh.id)
+
+  generateInfoModel(scene, mesh.id);
     
   console.log('infoView:', infoView);
   console.log('mesh:', mesh);
@@ -471,7 +473,7 @@ function animate() {
   topicBoxArray.forEach((mesh, index) => {
     updateRotation(mesh, index);
   });
-
+  
   mmi.update();
 
   renderer.render(scene, camera);
