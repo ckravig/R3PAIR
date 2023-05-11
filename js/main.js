@@ -29,7 +29,7 @@ let startY, endY;
 let infoView = false;
 
 // Debug const
-const debug = true;
+let debug = true;
 
 // Setup
 
@@ -522,6 +522,13 @@ document.addEventListener('keydown', function(event) {
 // ^ Standard Controls ^ -------------------------------------------------
 
 // Debug Menu -------------------------------------------------
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'KeyD') {
+    debug = !debug;
+    console.log(`Debug mode: ${debug}`);
+  }
+});
 
 if (debug) {
 
