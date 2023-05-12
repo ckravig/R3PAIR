@@ -146,3 +146,25 @@ h3, blockquote {
   }
 
   /* Loading Page */
+
+  .spin {
+    display: inline-block;
+  }
+  
+  .spin:hover {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0);
+    }
+    50% {
+      transform: rotate(360deg);
+    }
+    100% {
+      transform: rotate(0);
+    }
+  }
+  
+  

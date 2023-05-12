@@ -263,19 +263,19 @@ ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (j
 
 // mmi -------------------------------------------------
 
-// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+// create a handler for when user clicks on a mesh with the name 'threejsText'
 mmi.addHandler('threejsText', 'click', function(mesh) {
   console.log('mesh:', mesh);
   window.open('https://threejs.org', '_blank');
 });
 
-// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+// create a handler for when user clicks on a mesh with the name 'viteText'
 mmi.addHandler('viteText', 'click', function(mesh) {
   console.log('mesh:', mesh);
   window.open('https://vitejs.dev', '_blank');
 });
 
-// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+// create a handler for when user clicks on a mesh with the name 'tailwindcssText'
 mmi.addHandler('tailwindcssText', 'click', function(mesh) {
   console.log('mesh:', mesh);
   window.open('https://tailwindcss.com', '_blank');
