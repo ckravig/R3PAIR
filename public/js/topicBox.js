@@ -26,7 +26,7 @@ export function createTopicBox(topicBoxWidth, imageUrl, text) {
   if (text) {
     const fontLoader = new FontLoader();
     const ttfLoader = new TTFLoader();
-    ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+    ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (json) => {
       // First parse the font.
       const poppinsFont = fontLoader.parse(json);
       // Use parsed font as normal.
