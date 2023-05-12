@@ -1,0 +1,11 @@
+Model Information:
+* title:	Final Tractor
+* source:	https://sketchfab.com/3d-models/final-tractor-2b7c6999b4f84f408752dd0ac038eb86
+* author:	Dillan Jensen (https://sketchfab.com/BloodofBlue)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Final Tractor" (https://sketchfab.com/3d-models/final-tractor-2b7c6999b4f84f408752dd0ac038eb86) by Dillan Jensen (https://sketchfab.com/BloodofBlue) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

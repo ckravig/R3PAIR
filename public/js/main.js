@@ -97,6 +97,7 @@ async function onWindowResize() {
   screenWidth = visibleWidth;
   topicBoxDistance = topicBoxWidth / (2 * Math.tan(camera.fov * Math.PI / 360)) + screenWidth;
 
+  console.log('topicBoxDistance:', topicBoxDistance);
   console.log('pixelRatio:', pixelRatio);
   console.log('topicBoxWidth:', topicBoxWidth);
   console.log('screenWidth:', screenWidth);
@@ -215,6 +216,21 @@ function generateInfoModel(scene, meshID) {
       console.log("Error loading info model:", error);
     });
 
+  } else if (meshID === 35 || meshID === topicBoxArray[2].id) {
+    infoGltfLoader.load(`${import.meta.env.BASE_URL}/models/tractor/scene.gltf`, (infoGltf) => {
+      let infoModel = infoGltf.scene.children[0];
+      console.log("Info model loaded successfully.");
+      infoModel.scale.set(0.5, 0.5, 0.5);
+      infoModel.position.x = containerWidth / 2;
+      infoModel.position.z = infoDepth;
+      infoModel.position.y = 0;
+      infoModel.rotateZ(degToRad(-90));
+      infoModel.name = 'infoModel';
+      infoContainer.add(infoModel);
+    }, undefined, (error) => {
+      console.log("Error loading info model:", error);
+    });
+
   }
 
   // move infoContainer to camera position
@@ -256,19 +272,11 @@ topicBoxArray.forEach(boxMesh => {
   scene.add(boxMesh.parent);
 });
 
-// topicBox1.position.z = -5;
-// topicBox1.position.x = 0;
-
-// topicBox2.position.z = -5;
-// topicBox2.position.x = topicBoxDistance;
-
-// scene.add(topicBox1);
-// scene.add(topicBox2);
 
 console.log('topicBoxArray:', topicBoxArray);
 console.log('topicContainerArray:', topicContainerArray);
 
-// create a handler for when user clicks on a mesh with the name 'my_interactable_mesh'
+// create a handler for when user clicks on a mesh with the name 'topicBox'
 mmi.addHandler('topicBox', 'click', function(mesh) {
 
   createInfoBox(mesh.id);
@@ -481,41 +489,106 @@ function animate() {
 
 // ^Animation Loop^ -------------------------------------------------
 
-// Helpers
-
-// const lightHelper = new THREE.PointLightHelper(pointLight)
-// const gridHelper = new THREE.GridHelper(200, 50);
-// scene.add(lightHelper, gridHelper)
-
-// const controls = new OrbitControls(camera, renderer.domElement);
-
 
 
 // Standard Controls -------------------------------------------------
 
-document.addEventListener('keydown', function(event) {
+const triangles = [];
+
+const triangleGeometry = new THREE.BufferGeometry();
+const vertices = new Float32Array( [
+     0,  1, 0, // vertex 0
+    -1, -1, 0, // vertex 1
+     1, -1, 0, // vertex 2
+] );
+triangleGeometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+triangleGeometry.setIndex( [ 0, 1, 2 ] );
+triangleGeometry.computeVertexNormals();
+
+const triangleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+// Triangle Right
+const triangleRight = new THREE.Mesh(triangleGeometry, triangleMaterial);
+// Set the position of the triangle
+triangleRight.position.x = 2;
+triangleRight.position.z = -5;
+triangleRight.position.y = 0;
+triangleRight.rotateZ(degToRad(-90));
+triangleRight.scale.set(0.5, 0.5, 0.5);
+triangleRight.name = 'triangleRight';
+
+triangles.push(triangleRight);
+
+scene.add(triangleRight);
+
+// Triangle Left
+const triangleLeft = new THREE.Mesh(triangleGeometry, triangleMaterial);
+// Set the position of the triangle
+triangleLeft.position.x = -2;
+triangleLeft.position.z = -5;
+triangleLeft.position.y = 0;
+triangleLeft.rotateZ(degToRad(90));
+triangleLeft.scale.set(0.5, 0.5, 0.5);
+triangleLeft.name = 'triangleLeft';
+
+triangles.push(triangleLeft);
+
+scene.add(triangleLeft);
+
+function goRight() {
+
   if (infoView === false) {
-    if (event.key === 'ArrowRight') {
-      camera.position.x += topicBoxDistance;
+    if (camera.position.x != topicBoxArray[topicBoxArray.length - 1].parent.position.x) {
+        camera.position.x += topicBoxDistance;
+  
+        // move wrenches
+        wrenches.forEach((wrench) => {
+          wrench.position.x += topicBoxDistance;
+        });
 
-      // move wrenches
-      wrenches.forEach((wrench) => {
-        wrench.position.x += topicBoxDistance;
-      });
+        triangles.forEach((triangle) => {
+          triangle.position.x += topicBoxDistance;
+        });
     }
+    
+  }
 
+};
+
+function goLeft() {
+
+  if (infoView === false) {
     // prevent camera from moving past topicBox1
     if (camera.position.x != topicBox1.position.x) {
-      if (event.key === 'ArrowLeft') {
         camera.position.x -= topicBoxDistance;
 
         // move wrenches
         wrenches.forEach((wrench) => {
           wrench.position.x -= topicBoxDistance;
         });
+
+        triangles.forEach((triangle) => {
+          triangle.position.x -= topicBoxDistance;
+        });
       }
     }
-    
+
+};
+
+mmi.addHandler('triangleRight', 'click', function(mesh) {
+  goRight();
+}); 
+
+mmi.addHandler('triangleLeft', 'click', function(mesh) {
+  goLeft();
+}); 
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'ArrowRight') {
+    goRight();
+  }
+  if (event.key === 'ArrowLeft') {
+    goLeft();
   }
 });
 
