@@ -186,7 +186,7 @@ function generateInfoModel(scene, meshID) {
   // model
   const infoGltfLoader = new GLTFLoader();
   if (meshID === topicBoxArray[0].id || meshID === 27) {
-    infoGltfLoader.load('/models/wrench/scene.gltf', (infoGltf) => {
+    infoGltfLoader.load(`${import.meta.env.BASE_URL}/models/wrench/scene.gltf`, (infoGltf) => {
       let infoModel = infoGltf.scene.children[0];
       console.log("Info model loaded successfully.");
       infoModel.scale.set(0.02, 0.02, 0.02);
@@ -202,7 +202,7 @@ function generateInfoModel(scene, meshID) {
       console.log("Error loading info model:", error);
     });
   } else if (meshID === 29 || meshID === topicBoxArray[1].id) {
-    infoGltfLoader.load('/models/wallE/scene.gltf', (infoGltf) => {
+    infoGltfLoader.load(`${import.meta.env.BASE_URL}/models/wallE/scene.gltf`, (infoGltf) => {
       let infoModel = infoGltf.scene.children[0];
       console.log("Info model loaded successfully.");
       infoModel.scale.set(0.009, 0.009, 0.009);
@@ -239,9 +239,9 @@ function closeInfoContainer() {
 
 // topicBox objects -------------------------------------------------
 
-const topicBox1 = createTopicBox(topicBoxWidth, '/images/RightToRepair.jpg', 'Right to Repair');
-const topicBox2 = createTopicBox(topicBoxWidth, '/images/Recycle-Logo.jpg', 'Benefits');
-const topicBox3 = createTopicBox(topicBoxWidth, '/images/tractor.png', 'Tractors?');
+const topicBox1 = createTopicBox(topicBoxWidth, `${import.meta.env.BASE_URL}/images/RightToRepair.jpg`, 'Right to Repair');
+const topicBox2 = createTopicBox(topicBoxWidth, `${import.meta.env.BASE_URL}/images/Recycle-Logo.jpg`, 'Benefits');
+const topicBox3 = createTopicBox(topicBoxWidth, `${import.meta.env.BASE_URL}/images/tractor.png`, 'Tractors?');
 
 
 topicContainerArray = [topicBox1, topicBox2, topicBox3];
@@ -400,7 +400,7 @@ function createWrenchBackground() {
   startY = visibleHeight / 2 + padding;
   endY = -visibleHeight / 2 - padding;
   
-  gltfLoader.load('/models/wrench/scene.gltf', (gltf) => {
+  gltfLoader.load(`${import.meta.env.BASE_URL}/models/wrench/scene.gltf`, (gltf) => {
     console.log("Wrench model loaded successfully.");
     const wrench = gltf.scene.children[0];
     const numWrenches = numColumns * Math.ceil(visibleHeight * preferredWrenchDensity);

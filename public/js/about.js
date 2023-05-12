@@ -113,7 +113,7 @@ window.onload = function() {
 }
 
 // threejsModel -------------------------------------------------
-gltfLoader.load('/models/three.js/scene.gltf', (threejsModel) => {
+gltfLoader.load(`${import.meta.env.BASE_URL}/models/three.js/scene.gltf`, (threejsModel) => {
   threejsModel.scene.position.z = camera.position.z - 5;
   let modelOffset = 0.7;
     // Positioning the three.js model in line
@@ -125,7 +125,7 @@ gltfLoader.load('/models/three.js/scene.gltf', (threejsModel) => {
 });
 
 // viteModel -------------------------------------------------
-gltfLoader.load('/models/vite/scene.glb', (viteModel) => {
+gltfLoader.load(`${import.meta.env.BASE_URL}/models/vite/scene.glb`, (viteModel) => {
   viteModel.scene.position.z = camera.position.z - 5;
   let modelOffset = 0.2;
       // Positioning the vite model in line
@@ -137,7 +137,7 @@ gltfLoader.load('/models/vite/scene.glb', (viteModel) => {
 });
 
 // tailwinModel -------------------------------------------------
-gltfLoader.load('/models/tailwind/scene.gltf', (tailwindModel) => {
+gltfLoader.load(`${import.meta.env.BASE_URL}/models/tailwind/scene.gltf`, (tailwindModel) => {
   tailwindModel.scene.position.z = camera.position.z - 5;
   let modelOffset = 0.5;
       // Positioning the vite model in line
@@ -162,7 +162,7 @@ const fontLoader = new FontLoader();
 const ttfLoader = new TTFLoader();
 
 // About Text
-ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (json) => {
   // First parse the font.
   const poppinsFont = fontLoader.parse(json);
   // Use parsed font as normal.
@@ -188,7 +188,7 @@ console.log('modelArray:', modelArray);
 
 
 // three.js text
-ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (json) => {
   // First parse the font.
   const poppinsFont = fontLoader.parse(json);
   // Use parsed font as normal.
@@ -212,7 +212,7 @@ ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
 
 
 // Vite text
-ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (json) => {
   // First parse the font.
   const poppinsFont = fontLoader.parse(json);
   // Use parsed font as normal.
@@ -236,7 +236,7 @@ ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
 
 
 // tailwindcss text
-ttfLoader.load('/fonts/poppins/Poppins-Light.ttf', (json) => {
+ttfLoader.load(`${import.meta.env.BASE_URL}/fonts/poppins/Poppins-Light.ttf`, (json) => {
   // First parse the font.
   const poppinsFont = fontLoader.parse(json);
   // Use parsed font as normal.
